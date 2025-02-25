@@ -41,7 +41,7 @@ jobs:
         run: pip install schemachange
 
       - name: Debug folder contents
-        run: ls -la /home/runner/work/<git_repo_name>/<git_repo_name>/
+        run: ls -la /migrations/
 
 # creating a dynamic file in from the private key stored in git secret and providing access only
  # to owner so chmod 600
@@ -72,7 +72,7 @@ jobs:
           echo "Current directory: $(pwd)"
 
   # lopping through folder  object_to_deploy to deploy all the file in it subfolders       
-          for folder in /home/runner/work/<git_repo>/<git_repo>/object_to_deply/*/; do
+          for folder in /migrations/*/; do
             if [ -d "$folder" ]; then 
               echo "Processing folder $(basename $folder) ..."
            
