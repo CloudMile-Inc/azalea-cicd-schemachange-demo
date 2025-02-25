@@ -1,0 +1,93 @@
+name: snowflake-devops-demo
+
+# Controls when the action will run. 
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'migrations/**'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  deploy-snowflake-changes-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Check branch
+        id: check_branch
+        run: |
+          echo "Pushing to : ${{ github.ref }}"
+#installing required library on container 
+
+      - name: instaling snowflake
+        run: pip install snowflake
+      
+      - name: instaling snowflake-connector-python
+        run: pip install snowflake-connector-python
+      
+      - name: instaling schemachange
+        run: pip install schemachange
+
+      - name: Debug folder contents
+        run: ls -la /home/runner/work/<git_repo_name>/<git_repo_name>/
+
+# creating a dynamic file in from the private key stored in git secret and providing access only
+ # to owner so chmod 600
+      - name: Decrypt RSA key
+        run: |
+          echo "${{ secrets.SNOWFLAKE_PRIVATE_KEY }}"  > ./config/rsa_key.p8
+          chmod 600 ./config/rsa_key.p8 
+
+ #setting environment variable by using all the secrets
+      - name: Set Environment Variable
+        env: 
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USERNAME: ${{ secrets.SNOWFLAKE_USERNAME }}
+          SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_PRIVATE_KEY_PATH: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_PATH}}
+          SNOWFLAKE_PRIVATE_KEY_PASSPHRASE: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_PASSPHRASE}}
+          SNOWFLAKE_DATABASE: ${{ github.ref == 'refs/heads/main' && secrets.SNOWFLAKE_DATABASE_PROD ||  github.ref == 'refs/heads/qa' && secrets.SNOWFLAKE_DATABASE_QA  ||  secrets.SNOWFLAKE_DATABASE_DEV}}
+ 
+ # assigning Git environment variable with below details 
+ # so it can be referenced in schemachange-config.yml  file especially database name
+        run: |
+          echo "SNOWFLAKE_ACCOUNT= $SNOWFLAKE_ACCOUNT" >> $GITHUB_ENV
+          echo "SNOWFLAKE_USERNAME= $SNOWFLAKE_USERNAME" >> $GITHUB_ENV
+          echo "SNOWFLAKE_ROLE= $SNOWFLAKE_ROLE" >> $GITHUB_ENV
+          echo "SNOWFLAKE_WAREHOUSE= $SNOWFLAKE_WAREHOUSE" >> $GITHUB_ENV
+          echo "SNOWFLAKE_DATABASE= $SNOWFLAKE_DATABASE" >> $GITHUB_ENV
+          echo "Current directory: $(pwd)"
+
+  # lopping through folder  object_to_deploy to deploy all the file in it subfolders       
+          for folder in /home/runner/work/<git_repo>/<git_repo>/object_to_deply/*/; do
+            if [ -d "$folder" ]; then 
+              echo "Processing folder $(basename $folder) ..."
+           
+              #log_folder="logs/$(basename $folder)"
+           
+              #mkdir -p "$log_folder"
+ 
+              schemachange deploy --config-folder ./config -f "$folder"
+              echo $("$folder")
+            else
+              echo "No Matching Folders found"
+            fi 
+          
+          done
+
+      # Remove the private key file after use    
+      - name: Clean up private key file
+        run: rm -f rsa_key.p8
