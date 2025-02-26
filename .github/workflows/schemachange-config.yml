@@ -1,9 +1,0 @@
-# schemachange_config.yml
-
-snowflake_account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
-snowflake_user: "{{ env_var('SNOWFLAKE_USERNAME') }}"
-snowflake_warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
-snowflake_database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
-snowflake_role: "{{ env_var('SNOWFLAKE_ROLE') }}"
-change-history-table: "{{ env_var('SNOWFLAKE_DATABASE') }}.SCHEMACHANGE.CHANGE_HISTORY"
-create-change-history-table: true
