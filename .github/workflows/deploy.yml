@@ -1,47 +1,68 @@
-name: snowflake-devops-demo
+name: Deploy Schemachange
 
-# Controls when the action will run. 
 on:
   push:
     branches:
       - main
-    paths:
-      - 'migrations/**'
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 
 jobs:
-  deploy-snowflake-changes-job:
+  deploy_tst:
     runs-on: ubuntu-latest
-
+    environment: TST
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Setup Python 3.10
-        uses: actions/setup-python@v5
+      - name: Dry Run TST
+        id: dry_run_tst
+        uses: ./.github/workflows/templates/deploy-template.yaml # Assuming the template is in this path
         with:
-          python-version: '3.10'
+          snowflake_password: ${{ secrets.SF_PASSWORD }}
+          dry_run: '--dry-run'
+          env: "tst" # Pass env variable
 
-      - name: Check branch
-        id: check_branch
-        run: |
-          echo "Pushing to : ${{ github.ref }}"
+      - name: Manual Validation TST
+        uses: peter-evans/ask-for-approval@v5
+        with:
+          approvers: ${{ github.repository_owner }} # or specific users/teams
+          minimum-approvals: 1
+        if: always() && steps.dry_run_tst.outcome == 'success'
 
-      - name: instaling snowflake
-        run: pip install snowflake
-        
-      - name: instaling snowflake-connector-python
-        run: pip install snowflake-connector-python
+      - name: Deploy TST
+        uses: ./.github/workflows/templates/deploy-template.yaml # Assuming the template is in this path
+        with:
+          snowflake_password: ${{ secrets.SF_PASSWORD }}
+          dry_run: ''
+          env: "tst" # Pass env variable
+        if: steps.manual_validation_tst.outputs.approved == 'true'
 
-      - name: Run schemachange
-        run: |
-          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          python --version
-          echo "Step 1: Installing schemachange"
-          pip install schemachange
-          
-          echo "Step 2: Running schemachange"
-          schemachange -f $GITHUB_WORKSPACE/migrations --config-folder ./config 
+  deploy_prd:
+    runs-on: ubuntu-latest
+    environment: PRD
+    needs: deploy_tst # Ensure TST deploys before PRD
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Dry Run PRD
+        id: dry_run_prd
+        uses: ./.github/workflows/templates/deploy-template.yaml # Assuming the template is in this path
+        with:
+          snowflake_password: ${{ secrets.SF_PASSWORD }}
+          dry_run: '--dry-run'
+          env: "prd" # Pass env variable
+
+      - name: Manual Validation PRD
+        uses: peter-evans/ask-for-approval@v5
+        with:
+          approvers: ${{ github.repository_owner }} # or specific users/teams
+          minimum-approvals: 1
+        if: always() && steps.dry_run_prd.outcome == 'success'
+
+      - name: Deploy PRD
+        uses: ./.github/workflows/templates/deploy-template.yaml # Assuming the template is in this path
+        with:
+          snowflake_password: ${{ secrets.SF_PASSWORD }}
+          dry_run: ''
+          env: "prd" # Pass env variable
+        if: steps.manual_validation_prd.outputs.approved == 'true'

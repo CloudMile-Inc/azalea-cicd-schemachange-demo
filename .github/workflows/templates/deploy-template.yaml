@@ -1,0 +1,25 @@
+parameters:
+- name: 'snowflake_password'
+ default: ''
+ type: string
+- name: 'dry_run'
+ default: ''
+ type: string
+
+
+steps:
+   # choose your python version here.
+ - task: UsePythonVersion@0
+   displayName: 'Use Python 3.x'
+   inputs:
+     versionSpec: 3.x
+
+
+ - script: pip install schemachange
+   displayName: install schemachange
+
+ - script: schemachange --config-folder $(System.DefaultWorkingDirectory)/cicd/schemachange_config/$(env) ${{ parameters.dry_run }}
+   env:
+     SNOWFLAKE_PASSWORD: ${{ parameters.snowflake_password }}
+   displayName: Run Deployment ${{ parameters.dry_run }}
+   workingDirectory: $(Build.Repository.LocalPath)
