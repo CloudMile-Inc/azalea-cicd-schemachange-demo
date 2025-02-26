@@ -44,4 +44,4 @@ jobs:
           pip install schemachange
           
           echo "Step 2: Running schemachange"
-          schemachange deply --config-folder ./config -f $GITHUB_WORKSPACE/migrations
+          schemachange -f $GITHUB_WORKSPACE/migrations --config-folder ./config 
