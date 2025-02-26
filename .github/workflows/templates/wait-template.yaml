@@ -1,0 +1,6 @@
+steps:
+ - task: ManualValidation@0
+   timeoutInMinutes: 60 # This is a limit of the serverless task
+   inputs:
+     instructions: 'Please validate the output from the "Run Deployment --dry-run" step and resume'
+     onTimeout: 'reject'

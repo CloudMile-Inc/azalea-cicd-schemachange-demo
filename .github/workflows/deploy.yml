@@ -3,35 +3,69 @@ name: Deploy Snowflake Changes
 on:
   push:
     branches:
-      - main # Or your main branch
+      - main
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-  deploy:
+  deploy_tst:
     runs-on: ubuntu-latest
-
+    environment: TST
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Dry Run TST
+        id: dry_run_tst
+        uses: ./.github/workflows/templates/deploy-template.yaml # Assuming the template is in this path
         with:
-          python-version: '3.x'
+          snowflake_password: ${{ secrets.SF_PASS }}
+          dry_run: '--dry-run'
+          env: "tst" # Pass env variable
 
-      - name: Install dependencies
-        run: |
-          pip install schemachange snowflake-connector-python
+      - name: Manual Validation TST
+        uses: peter-evans/ask-for-approval@v5
+        with:
+          approvers: ${{ github.repository_owner }} # or specific users/teams
+          minimum-approvals: 1
+        if: always() && steps.dry_run_tst.outcome == 'success'
 
-      - name: Deploy changes
-        run: |
-          schemachange -f schemachange.cfg
-        env:
-          SNOWFLAKE_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
-          SNOWFLAKE_USER: ${{ secrets.SF_USER }}
-          SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}
-          SNOWFLAKE_DATABASE: ${{ secrets.SF_DATABASE }}
-          SNOWFLAKE_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
-          SNOWFLAKE_ROLE: ${{ secrets.SF_ROLE }}
+      - name: Deploy TST
+        uses: ./.github/workflows/templates/deploy-template.yaml # Assuming the template is in this path
+        with:
+          snowflake_password: ${{ secrets.SF_PASS }}
+          dry_run: ''
+          env: "tst" # Pass env variable
+        if: steps.manual_validation_tst.outputs.approved == 'true'
+
+  deploy_prd:
+    runs-on: ubuntu-latest
+    environment: PRD
+    needs: deploy_tst # Ensure TST deploys before PRD
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Dry Run PRD
+        id: dry_run_prd
+        uses: ./.github/workflows/templates/deploy-template.yaml # Assuming the template is in this path
+        with:
+          snowflake_password: ${{ secrets.SF_PASS }}
+          dry_run: '--dry-run'
+          env: "prd" # Pass env variable
+
+      - name: Manual Validation PRD
+        uses: peter-evans/ask-for-approval@v5
+        with:
+          approvers: ${{ github.repository_owner }} # or specific users/teams
+          minimum-approvals: 1
+        if: always() && steps.dry_run_prd.outcome == 'success'
+
+      - name: Deploy PRD
+        uses: ./.github/workflows/templates/deploy-template.yaml # Assuming the template is in this path
+        with:
+          snowflake_password: ${{ secrets.SF_PASS }}
+          dry_run: ''
+          env: "prd" # Pass env variable
+        if: steps.manual_validation_prd.outputs.approved == 'true'
