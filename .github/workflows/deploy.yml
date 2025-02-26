@@ -27,7 +27,7 @@ jobs:
 
       - name: Deploy changes
         run: |
-          schemachange -f schemachange.cfg deploy
+          schemachange -f schemachange.cfg
         env:
           SNOWFLAKE_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
           SNOWFLAKE_USER: ${{ secrets.SF_USER }}
