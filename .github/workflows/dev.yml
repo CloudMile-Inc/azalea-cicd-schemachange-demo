@@ -27,11 +27,11 @@ jobs:
     env:
         SNOWFLAKE_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
         SNOWFLAKE_USER: ${{ secrets.SF_USERNAME }}
-        SNOWFLAKE_ROLE: ${{ secrets.SF_ROLE }}
-        SNOWFLAKE_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
-        SNOWFLAKE_DATABASE: ${{ secrets.SF_DATABASE }}
-        MY_TARGET_SCHEMA: ${{ matrix.scenario-name }}_${{ github.run_number }}_${{ strategy.job-index }}
         SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}
+        SNOWFLAKE_ROLE: DEMO_SCHEMACHANGE_ADMIN
+        SNOWFLAKE_WAREHOUSE: DEMO_SCHEMACHANGECOMPUTE_WH
+        SNOWFLAKE_DATABASE: DEMO_SCHEMACHANGE
+        MY_TARGET_SCHEMA: ${{ matrix.scenario-name }}_${{ github.run_number }}_${{ strategy.job-index }}
         SCENARIO_NAME: ${{ matrix.scenario-name }}
     steps:
       - uses: actions/checkout@v4
