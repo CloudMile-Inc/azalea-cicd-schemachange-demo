@@ -25,14 +25,14 @@ jobs:
     if: ${{ github.event.label.name == 'ci-run-tests' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
 
     env:
-      SNOWFLAKE_PASSWORD: ${{ secrets.SCHEMACHANGE_SNOWFLAKE_PASSWORD }}
-      SNOWFLAKE_USER: ${{ secrets.SCHEMACHANGE_SNOWFLAKE_USER }}
-      SNOWFLAKE_ACCOUNT: ${{ secrets.SCHEMACHANGE_SNOWFLAKE_ACCOUNT }}
-      SNOWFLAKE_DATABASE: SCHEMACHANGE_DEMO
-      SNOWFLAKE_WAREHOUSE: SCHEMACHANGE_DEMO_WH
-      SNOWFLAKE_ROLE: SCHEMACHANGE_DEMO-DEPLOY
-      MY_TARGET_SCHEMA: ${{ matrix.scenario-name }}_${{ github.run_number }}_${{ strategy.job-index }}
-      SCENARIO_NAME: ${{ matrix.scenario-name }}
+        SNOWFLAKE_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
+        SNOWFLAKE_USER: ${{ secrets.SF_USERNAME }}
+        SNOWFLAKE_ROLE: ${{ secrets.SF_ROLE }} 
+        SNOWFLAKE_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
+        SNOWFLAKE_DATABASE: ${{ secrets.SF_DATABASE }}
+        MY_TARGET_SCHEMA: ${{ matrix.scenario-name }}_${{ github.run_number }}_${{ strategy.job-index }}
+        SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}
+        SCENARIO_NAME: ${{ matrix.scenario-name }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
