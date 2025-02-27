@@ -29,7 +29,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     if: ${{ github.event.label.name == 'ci-run-tests' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
     env:
-      SNOWFLAKE_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
+      SNOWFLAKE_ACCOUNT: A4325755069861-CLOUDMILE_PARTNER
       SNOWFLAKE_USER: DEMO_SCHEMACHANGE_SVC_USER
       SNOWFLAKE_ROLE: USERADMIN
       SNOWFLAKE_WAREHOUSE: DEMO_SCHEMACHANGECOMPUTE_WH
