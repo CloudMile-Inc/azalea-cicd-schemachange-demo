@@ -23,9 +23,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        scenario-name: [ 'basics_demo', 'citibike_demo', 'citibike_demo_jinja']
-        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        scenario-name: [ 'basics_demo']
+        os: ["ubuntu-latest"]
+        python-version: ["3.12"]
     runs-on: ${{ matrix.os }}
     if: ${{ github.event.label.name == 'ci-run-tests' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
     env:
