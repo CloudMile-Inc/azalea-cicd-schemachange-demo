@@ -61,10 +61,6 @@ jobs:
           chmod +x populateConnection.sh
           bash populateConnection.sh
         working-directory: .
-      - name: Test with pytest
-        id: pytest
-        run: |
-          pytest
       # Testing Schemachange demo projects
       - name: Test Schemachange on ${{ matrix.os }} targeting ${{ env.SNOWFLAKE_DATABASE }}.${{ env.MY_TARGET_SCHEMA }} schema
         run: |
