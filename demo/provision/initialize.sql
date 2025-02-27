@@ -2,15 +2,15 @@
 -- YOu may choose to have your own RBAC and SCHEMACHANGE database setup depending on your organization objectives.
 -- Set these to personalize your deployment
 SET SERVICE_USER_PASSWORD = 'CHANGEME'; -- Password for the service user that will be logging
-SET ADMIN_USER = 'CHANGEME';
-SET TARGET_DB_NAME = 'SCHEMACHANGE_DEMO'; -- Name of database that will have the SCHEMACHANGE Schema for change tracking.
+SET ADMIN_USER = 'MAGNUS';
+SET TARGET_DB_NAME = 'DEMO_SCHEMACHANGE'; -- Name of database that will have the SCHEMACHANGE Schema for change tracking.
 
 -- Dependent Variables; Change the naming pattern if you want but not necessary
 SET ADMIN_ROLE = $TARGET_DB_NAME || '_ADMIN'; -- This role will own the database and schemas.
 -- The deploy role is name with hyphen is used to allow us to test the use of hyphenated identifiers.
 SET DEPLOY_ROLE = '"' || $TARGET_DB_NAME || '-DEPLOY"'; -- This role will be granted privileges to create objects in any schema in the database
 SET SERVICE_USER = $TARGET_DB_NAME || '_SVC_USER'; -- This user will be granted the Deploy role.
-SET WAREHOUSE_NAME = $TARGET_DB_NAME || '_WH';
+SET WAREHOUSE_NAME = $TARGET_DB_NAME || 'COMPUTE_WH';
 SET AC_U = '_AC_U_' || $WAREHOUSE_NAME;
 SET AC_O = '_AC_O_' || $WAREHOUSE_NAME;
 
