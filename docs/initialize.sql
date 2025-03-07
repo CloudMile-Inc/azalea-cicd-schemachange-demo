@@ -3,9 +3,10 @@
 -- Set these to personalize your deployment
 SET ADMIN_USER = 'MAGNUS'; -- Name of Admin initializing SCHEMACHANGE.
 SET SERVICE_USER = 'SCHEMACHANGE_DEMO_SVC_USER'; -- Service user used to run SCHEMACHANGE deployments.
-SET ADMIN_ROLE = 'SCHEMACHANGE_ADMIN'; -- This role will own the database and schemas & granted privileges to create objects in any schema in the database.
+SET ADMIN_ROLE = 'SCHEMACHANGE_DEMO_ADMIN'; -- This role will own the database and schemas & granted privileges to create objects in any schema in the database.
 SET TARGET_DB_NAME = 'SCHEMACHANGE_DEMO'; -- Name of database that will have the SCHEMACHANGE Schema for change tracking.
-SET WAREHOUSE_NAME = 'SCHEMACHANGE_DEMO_WH'; -- Name of warehouse
+SET WAREHOUSE_NAME = 'SCHEMACHANGE_DEMOCOMPUTE_WH'; -- Name of warehouse
+SET TARGET_SCHEMA_NAME = 'SCHEMACHANGE';
 
 -- Dependent Variables; Change the naming pattern if you want but not necessary
 SET AC_U = '_AC_U_' || $WAREHOUSE_NAME; -- Access Control User (will be granted Usage privileges)
@@ -31,3 +32,11 @@ GRANT OWNERSHIP ON WAREHOUSE IDENTIFIER($WAREHOUSE_NAME) TO ROLE IDENTIFIER($ADM
 GRANT USAGE ON WAREHOUSE IDENTIFIER($WAREHOUSE_NAME) TO ROLE IDENTIFIER($AC_U);
 GRANT OPERATE ON WAREHOUSE IDENTIFIER($WAREHOUSE_NAME) TO ROLE IDENTIFIER($AC_O);
 GRANT ROLE IDENTIFIER($AC_U) TO ROLE IDENTIFIER($ADMIN_ROLE);
+
+USE ROLE IDENTIFIER($ADMIN_ROLE);
+USE DATABASE IDENTIFIER($TARGET_DB_NAME);
+USE WAREHOUSE IDENTIFIER($WAREHOUSE_NAME);
+
+CREATE SCHEMA IF NOT EXISTS IDENTIFIER($TARGET_SCHEMA_NAME) WITH MANAGED ACCESS;
+
+GRANT OWNERSHIP ON SCHEMA IDENTIFIER($TARGET_SCHEMA_NAME) TO ROLE IDENTIFIER($ADMIN_ROLE);
