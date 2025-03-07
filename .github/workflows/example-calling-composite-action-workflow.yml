@@ -1,4 +1,4 @@
-name: Call custom action workflow from another repo
+name: Call composite action workflow from another repo
 
 on:
   workflow_dispatch:
