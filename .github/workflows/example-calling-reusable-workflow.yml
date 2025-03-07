@@ -1,0 +1,18 @@
+name: Call a reusable workflow
+
+on:
+    workflow_dispatch:
+
+jobs:
+    call-workflow-passing-data:
+        uses: ./.github/workflows/schemachange-reusable-workflow.yml
+        with:
+            DRY_RUN: --dry-run #Flag to control schemachange dry run (simulates execution)
+            SF_DATABASE: SCHEMACHANGE_DEMO #Provide the Snowflake database name
+            LOCATION_OF_DDL_SCRIPTS: "AZALEA/ADEPT_SNOWFLAKE_DATABASE" #Path to DDL script
+        secrets:
+            SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
+            SF_USERNAME: ${{ secrets.SF_USERNAME }}
+            SF_ROLE: ${{ secrets.SF_ROLE }}
+            SF_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
+            SF_PASSWORD: ${{ secrets.SF_PASSWORD }}
