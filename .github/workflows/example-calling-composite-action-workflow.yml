@@ -22,34 +22,16 @@
 #           SF_PRIVATE_KEY: ${{ secrets.SF_PRIVATE_KEY }}
 #           SF_PRIVATE_KEY_FILE_PWD: ${{ secrets.SF_PRIVATE_KEY_FILE_PWD }}
 
-name: Call test action workflow with if loop
+name: On PR approved for DATA_PRODUCT, call a reusable workflow
 
 on:
-  workflow_dispatch:  
   push:
     branches:
-      - magnus_test_uat
-      - magnus_test_prod
+      - magnus_test_prod  # For Production
+      - magnus_test_uat   # For UAT
 
 jobs:
-  master:
-    if: github.ref == 'refs/heads/magnus_test_uat' # run this job only for the uat branch
-    runs-on: ubuntu-latest
-    name: Calls a schemachange composite action
-    steps:
-      - id: schemachange
-        uses: CloudMile-Inc/schemachange-action@5a7ac8aeef0353de759d965f2fdc00281b8f1555
-        with:
-        #   DRY_RUN: --dry-run
-          SF_DATABASE:  SCHEMACHANGE_DEMO #Provide the Snowflake database name
-          LOCATION_OF_DDL_SCRIPTS: ADEPT_SNOWFLAKE_DATABASE
-          SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
-          SF_USERNAME: ${{ secrets.SF_USERNAME }}
-          SF_ROLE: ${{ secrets.SF_ROLE }}
-          SF_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
-          SF_PRIVATE_KEY: ${{ secrets.SF_PRIVATE_KEY }}
-          SF_PRIVATE_KEY_FILE_PWD: ${{ secrets.SF_PRIVATE_KEY_FILE_PWD }}
-  magnus_test:
+  production:
     if: github.ref == 'refs/heads/magnus_test_prod' # run this job only for the production branch
     runs-on: ubuntu-latest
     name: Calls a schemachange composite action
@@ -57,12 +39,74 @@ jobs:
       - id: schemachange
         uses: CloudMile-Inc/schemachange-action@5a7ac8aeef0353de759d965f2fdc00281b8f1555
         with:
-        #   DRY_RUN: --dry-run
-          SF_DATABASE:  SCHEMACHANGE_DEMO #Provide the Snowflake database name
+          DRY_RUN: --dry-run
+          SF_DATABASE: SCHEMACHANGE_DEMO
           LOCATION_OF_DDL_SCRIPTS: ADEPT_SNOWFLAKE_DATABASE
-          SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
-          SF_USERNAME: ${{ secrets.SF_USERNAME }}
-          SF_ROLE: ${{ secrets.SF_ROLE }}
-          SF_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
-          SF_PRIVATE_KEY: ${{ secrets.SF_PRIVATE_KEY }}
-          SF_PRIVATE_KEY_FILE_PWD: ${{ secrets.SF_PRIVATE_KEY_FILE_PWD }}
+          SF_ACCOUNT: ${{ vars.SF_ACCOUNT_PROD }} 
+          SF_USERNAME: ${{ vars.SF_USERNAME }}
+          SF_ROLE: ${{ vars.SF_ROLE }}
+          SF_WAREHOUSE: ${{ vars.SF_WAREHOUSE }}
+          SF_PRIVATE_KEY: ${{ secrets.SF_PRIVATE_KEY_PROD }}
+          SF_PRIVATE_KEY_FILE_PWD: ${{ secrets.SF_PRIVATE_KEY_FILE_PWD_PROD }}
+  uat:
+    if: github.ref == 'refs/heads/magnus_test_uat' # run this job only for the uat branch
+    runs-on: ubuntu-latest
+    name: Calls a schemachange composite action
+    steps:
+      - id: schemachange
+        uses: CloudMile-Inc/schemachange-action@5a7ac8aeef0353de759d965f2fdc00281b8f1555
+        with:
+          DRY_RUN: --dry-run
+          SF_DATABASE: SCHEMACHANGE_DEMO
+          LOCATION_OF_DDL_SCRIPTS: ADEPT_SNOWFLAKE_DATABASE
+          SF_ACCOUNT: ${{ vars.SF_ACCOUNT_UAT }} 
+          SF_USERNAME: ${{ vars.SF_USERNAME }}
+          SF_ROLE: ${{ vars.SF_ROLE }}
+          SF_WAREHOUSE: ${{ vars.SF_WAREHOUSE }}
+          SF_PRIVATE_KEY: ${{ secrets.SF_PRIVATE_KEY_UAT }}
+          SF_PRIVATE_KEY_FILE_PWD: ${{ secrets.SF_PRIVATE_KEY_FILE_PWD_UAT }}
+
+# name: Call test action workflow with if loop
+
+# on:
+#   workflow_dispatch:  
+#   push:
+#     branches:
+#       - magnus_test_uat
+#       - magnus_test_prod
+
+# jobs:
+#   master:
+#     if: github.ref == 'refs/heads/magnus_test_uat' # run this job only for the uat branch
+#     runs-on: ubuntu-latest
+#     name: Calls a schemachange composite action
+#     steps:
+#       - id: schemachange
+#         uses: CloudMile-Inc/schemachange-action@5a7ac8aeef0353de759d965f2fdc00281b8f1555
+#         with:
+#         #   DRY_RUN: --dry-run
+#           SF_DATABASE:  SCHEMACHANGE_DEMO #Provide the Snowflake database name
+#           LOCATION_OF_DDL_SCRIPTS: ADEPT_SNOWFLAKE_DATABASE
+#           SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
+#           SF_USERNAME: ${{ secrets.SF_USERNAME }}
+#           SF_ROLE: ${{ secrets.SF_ROLE }}
+#           SF_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
+#           SF_PRIVATE_KEY: ${{ secrets.SF_PRIVATE_KEY }}
+#           SF_PRIVATE_KEY_FILE_PWD: ${{ secrets.SF_PRIVATE_KEY_FILE_PWD }}
+#   magnus_test:
+#     if: github.ref == 'refs/heads/magnus_test_prod' # run this job only for the production branch
+#     runs-on: ubuntu-latest
+#     name: Calls a schemachange composite action
+#     steps:
+#       - id: schemachange
+#         uses: CloudMile-Inc/schemachange-action@5a7ac8aeef0353de759d965f2fdc00281b8f1555
+#         with:
+#         #   DRY_RUN: --dry-run
+#           SF_DATABASE:  SCHEMACHANGE_DEMO #Provide the Snowflake database name
+#           LOCATION_OF_DDL_SCRIPTS: ADEPT_SNOWFLAKE_DATABASE
+#           SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
+#           SF_USERNAME: ${{ secrets.SF_USERNAME }}
+#           SF_ROLE: ${{ secrets.SF_ROLE }}
+#           SF_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
+#           SF_PRIVATE_KEY: ${{ secrets.SF_PRIVATE_KEY }}
+#           SF_PRIVATE_KEY_FILE_PWD: ${{ secrets.SF_PRIVATE_KEY_FILE_PWD }}
