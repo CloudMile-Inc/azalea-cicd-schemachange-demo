@@ -29,7 +29,7 @@ on:
 
 jobs:
   production:
-    if: github.ref == 'refs/heads/main' # run this job only for the production branch
+    if: github.ref == 'refs/heads/master' # run this job only for the production branch
     runs-on: ubuntu-latest
     name: Calls a schemachange composite action
     steps:
