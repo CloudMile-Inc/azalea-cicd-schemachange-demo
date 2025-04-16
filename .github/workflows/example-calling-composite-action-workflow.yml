@@ -10,7 +10,7 @@ jobs:
     name: Calls a schemachange composite action
     steps:
       - id: schemachange
-        uses: CloudMile-Inc/schemachange-action@367de2e58ca56993cce012ddc9c27dddb81d4bf8
+        uses: CloudMile-Inc/schemachange-action@54d69e3d9c6e09ce2493df5c7d2d6e652d4083b7
         with:
         #   DRY_RUN: --dry-run
           SF_DATABASE: SCHEMACHANGE_DEMO #Provide the Snowflake database name
