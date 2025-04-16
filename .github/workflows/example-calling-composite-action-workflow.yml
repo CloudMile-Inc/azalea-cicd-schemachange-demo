@@ -41,7 +41,7 @@ jobs:
         with:
           DRY_RUN: --dry-run
           SF_DATABASE: SCHEMACHANGE_DEMO
-          LOCATION_OF_DDL_SCRIPTS: ADEPT_SNOWFLAKE_DATABASE
+          LOCATION_OF_DDL_SCRIPTS: ADEPT_SNOWFLAKE_DATABASE_PROD
           SF_ACCOUNT: ${{ vars.SF_ACCOUNT_PROD }} 
           SF_USERNAME: ${{ vars.SF_USERNAME }}
           SF_ROLE: ${{ vars.SF_ROLE }}
@@ -58,7 +58,7 @@ jobs:
         with:
           DRY_RUN: --dry-run
           SF_DATABASE: SCHEMACHANGE_DEMO
-          LOCATION_OF_DDL_SCRIPTS: ADEPT_SNOWFLAKE_DATABASE
+          LOCATION_OF_DDL_SCRIPTS: ADEPT_SNOWFLAKE_DATABASE_UAT
           SF_ACCOUNT: ${{ vars.SF_ACCOUNT_UAT }} 
           SF_USERNAME: ${{ vars.SF_USERNAME }}
           SF_ROLE: ${{ vars.SF_ROLE }}
