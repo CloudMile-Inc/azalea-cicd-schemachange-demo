@@ -27,12 +27,12 @@ name: On PR approved for DATA_PRODUCT, call a reusable workflow
 on:
   push:
     branches:
-      - magnus_test_prod  # For Production
+      - main  # For Production
       - magnus_test_uat   # For UAT
 
 jobs:
   production:
-    if: github.ref == 'refs/heads/magnus_test_prod' # run this job only for the production branch
+    if: github.ref == 'refs/heads/main' # run this job only for the production branch
     runs-on: ubuntu-latest
     name: Calls a schemachange composite action
     steps:
