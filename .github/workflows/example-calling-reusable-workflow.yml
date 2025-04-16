@@ -9,7 +9,7 @@ jobs:
         with:
             DRY_RUN: --dry-run #Flag to control schemachange dry run (simulates execution)
             SF_DATABASE: SCHEMACHANGE_DEMO #Provide the Snowflake database name
-            LOCATION_OF_DDL_SCRIPTS: "AZALEA/ADEPT_SNOWFLAKE_DATABASE" #Path to DDL script
+            LOCATION_OF_DDL_SCRIPTS: "ADEPT_SNOWFLAKE_DATABASE" #Path to DDL script
         secrets:
             SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
             SF_USERNAME: ${{ secrets.SF_USERNAME }}
