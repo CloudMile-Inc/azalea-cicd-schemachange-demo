@@ -12,7 +12,7 @@ jobs:
       - id: schemachange
         uses: CloudMile-Inc/schemachange-action@5a7ac8aeef0353de759d965f2fdc00281b8f1555
         with:
-          DRY_RUN: --dry-run
+          # DRY_RUN: --dry-run
           SF_DATABASE: SCHEMACHANGE_DEMO #Provide the Snowflake database name
           LOCATION_OF_DDL_SCRIPTS: ADEPT_SNOWFLAKE_DATABASE_PROD
           SF_ACCOUNT: ${{ secrets.SF_ACCOUNT_PROD }}
