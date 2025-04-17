@@ -1,11 +1,12 @@
-name: Call composite action workflow from another repo
+name: On PR approved for DATA_PRODUCT, call a reusable workflow
 
 on:
   workflow_dispatch:
     
 
 jobs:
-  hello_world_job:
+  schemachange_job:
+    environment: prod
     runs-on: ubuntu-latest
     name: Calls a schemachange composite action
     steps:
@@ -15,12 +16,12 @@ jobs:
           # DRY_RUN: --dry-run
           SF_DATABASE: SCHEMACHANGE_DEMO #Provide the Snowflake database name
           LOCATION_OF_DDL_SCRIPTS: ADEPT_SNOWFLAKE_DATABASE_PROD
-          SF_ACCOUNT: ${{ secrets.SF_ACCOUNT_PROD }}
+          SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
           SF_USERNAME: ${{ secrets.SF_USERNAME }}
           SF_ROLE: ${{ secrets.SF_ROLE }}
           SF_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
-          SF_PRIVATE_KEY: ${{ secrets.SF_PRIVATE_KEY_PROD }}
-          SF_PRIVATE_KEY_FILE_PWD: ${{ secrets.SF_PRIVATE_KEY_FILE_PWD_PROD }}
+          SF_PRIVATE_KEY: ${{ secrets.SF_PRIVATE_KEY }}
+          SF_PRIVATE_KEY_FILE_PWD: ${{ secrets.SF_PRIVATE_KEY_FILE_PWD }}
 
 # name: On PR approved for DATA_PRODUCT, call a reusable workflow
 
