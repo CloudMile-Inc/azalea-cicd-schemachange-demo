@@ -1,5 +1,13 @@
 name: On PR approved for DATA_PRODUCT, call a reusable workflow
 
+
+# DDL scripts must be executed sequentially via Schemachange when using Versioned Script Naming.
+# The workflow is expected to trigger in two scenarios:
+# 1. When a pull request is created
+# 2. When it is approved and changes are pushed to the master branch
+# The intent is to ensure that, upon pull request creation, the workflow verifies that 
+# the DDL statements can be executed in the Snowflake database without errors prior to PR approval.
+
 on:
   pull_request:
     branches:
