@@ -6,11 +6,11 @@ on:
       - master
     paths:
       - 'DATA_PRODUCT/**'
-  # push: #publish to Prod
-  #   branches:
-  #     - master
-  #   paths:
-  #     - 'DATA_PRODUCT/**'
+  push: #publish to Prod
+    branches:
+      - master
+    paths:
+      - 'DATA_PRODUCT/**'
     
 jobs:
   call-workflow-passing-data:
