@@ -1,12 +1,12 @@
 name: On PR approved for DATA_PRODUCT, call a reusable workflow
 
 on:
-  pull_request: #publish to UAT
+  pull_request:
     branches:
       - master
     paths:
       - 'DATA_PRODUCT/**'
-  push: #publish to Prod
+  push: 
     branches:
       - master
     paths:
@@ -14,7 +14,7 @@ on:
     
 jobs:
   call-workflow-passing-data:
-    environment: ${{ github.event_name == 'push' && 'prod' || 'uat' }}
+    environment: ${{ github.event_name == 'push' && 'prod' || 'uat' }} # Set environment based on the trigger: 'prod' if github.event_name is 'push', else 'uat'.
     runs-on: ubuntu-latest
     name: Calls a schemachange composite action
     steps:
