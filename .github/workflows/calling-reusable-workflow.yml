@@ -1,17 +1,20 @@
 name: On PR approved for DATA_PRODUCT, call a reusable workflow
 
 on:
-  workflow_dispatch:  
-  push:
+  pull_request: #publish to UAT
     branches:
       - master
-      - magnus_test_uat
     paths:
       - 'DATA_PRODUCT/**'
-
+  # push: #publish to Prod
+  #   branches:
+  #     - master
+  #   paths:
+  #     - 'DATA_PRODUCT/**'
+    
 jobs:
-  schemachange_job:
-    environment: uat
+  call-workflow-passing-data:
+    environment: ${{ github.event_name == 'push' && 'prod' || 'uat' }}
     runs-on: ubuntu-latest
     name: Calls a schemachange composite action
     steps:
