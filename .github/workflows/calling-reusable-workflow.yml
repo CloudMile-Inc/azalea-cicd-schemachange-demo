@@ -1,4 +1,4 @@
-name: On PR approved for DATA_PRODUCT, call a reusable workflow (prod)
+name: On PR approved for DATA_PRODUCT, call a reusable workflow (uat)
 
 on:
   workflow_dispatch:  
