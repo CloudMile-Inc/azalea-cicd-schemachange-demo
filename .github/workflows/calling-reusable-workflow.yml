@@ -1,7 +1,11 @@
-name: On PR approved for DATA_PRODUCT, call a reusable workflow
+name: On PR approved for DATA_PRODUCT, call a reusable workflow (prod)
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  
+  push:
+    branches:
+      - main
+      - magnus_test_uat
     
 
 jobs:
